@@ -1,0 +1,40 @@
+OBJECT Query 50000 Count Out of Office Request
+{
+  OBJECT-PROPERTIES
+  {
+    Date=13.06.22;
+    Time=[ 7:17:31];
+    Modified=Yes;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    CaptionML=[ENU=Count Out of Office Request;
+               RUS=Количество не обработанных заявок];
+  }
+  ELEMENTS
+  {
+    { 1   ;    ;DataItem;Out_of_Office_Request;
+               DataItemTable=Table50002;
+               DataItemTableFilter=Status=FILTER(New|In process);
+               DataItemLinkType=Use Default Values if No Match }
+
+    { 2   ;1   ;Column  ;                    ;
+               DataSource=Status }
+
+    { 3   ;1   ;Column  ;                    ;
+               CaptionML=[ENU=Number of request;
+                          RUS=Количество заявок];
+               DataSource=Entry No CODE;
+               MethodType=Totals;
+               Method=Sum }
+
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+

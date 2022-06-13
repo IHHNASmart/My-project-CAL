@@ -1,0 +1,60 @@
+OBJECT Page 50007 Out of Office Request CardPart
+{
+  OBJECT-PROPERTIES
+  {
+    Date=12.06.22;
+    Time=18:12:20;
+    Modified=Yes;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    Editable=No;
+    CaptionML=[ENU=Out of Office Request;
+               RUS=Заявка на отсутствие];
+    SourceTable=Table50002;
+    PageType=CardPart;
+    RefreshOnActivate=Yes;
+  }
+  CONTROLS
+  {
+    { 1   ;0   ;Container ;
+                ContainerType=ContentArea }
+
+    { 2   ;1   ;Group     ;
+                GroupType=CueGroup }
+
+    { 3   ;2   ;Field     ;
+                Name=All requests;
+                CaptionML=[ENU=All requests;
+                           RUS=Все заявки];
+                ApplicationArea=#Basic,#Suite;
+                SourceExpr=AllRequests;
+                Editable=False;
+                DrillDownPageID=Out of Office Requests List }
+
+    { 4   ;2   ;Field     ;
+                CaptionML=[ENU=All Requests - New;
+                           RUS=Все заявки - Новая];
+                ApplicationArea=#Basic,#Suite;
+                SourceExpr="AllRequests New";
+                Editable=false;
+                DrillDownPageID=Out of Office Requests List }
+
+    { 5   ;2   ;Field     ;
+                CaptionML=[ENU=All Requests - In process;
+                           RUS=Все заявки - На рассмотрении];
+                ApplicationArea=#Basic,#Suite;
+                SourceExpr="AllRequests In process";
+                Editable=False;
+                DrillDownPageID=Out of Office Requests List }
+
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+

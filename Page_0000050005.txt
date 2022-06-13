@@ -1,0 +1,84 @@
+OBJECT Page 50005 ConfirmationOfDeclined StanDia
+{
+  OBJECT-PROPERTIES
+  {
+    Date=10.06.22;
+    Time=11:58:52;
+    Modified=Yes;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    Editable=Yes;
+    CaptionML=[ENU=Confirmation Of Declined Status;
+               RUS=Подтверждение статуса Отклонено];
+    PageType=StandardDialog;
+    OnOpenPage=BEGIN
+                   //MESSAGE('OnOpenPage');
+               END;
+
+    OnClosePage=BEGIN
+
+                    //MESSAGE('OnClosePage conf');
+                END;
+
+    OnQueryClosePage=BEGIN
+
+                         //MESSAGE('OnQueryClosePage conf');
+                         IF CloseAction = ACTION::OK THEN
+                           IF RejectionReason = '' THEN
+                             ERROR(text001);
+                     END;
+
+  }
+  CONTROLS
+  {
+    { 1   ;0   ;Container ;
+                ContainerType=ContentArea }
+
+    { 2   ;1   ;Group     ;
+                Name=General;
+                GroupType=Group }
+
+    { 3   ;2   ;Field     ;
+                Name=Status;
+                CaptionML=[ENU=Status;
+                           RUS=Статус];
+                SourceExpr=Status;
+                Editable=False }
+
+    { 4   ;2   ;Field     ;
+                Name=RejectionReason;
+                CaptionML=[ENU=Rejection reason;
+                           RUS=Описание причины];
+                SourceExpr=RejectionReason;
+                MultiLine=Yes;
+                ShowMandatory=True }
+
+  }
+  CODE
+  {
+    VAR
+      Status@1000 : Text[30];
+      RejectionReason@1001 : Text[250];
+      text001@1002 : TextConst 'ENU=To confirm, you must enter the reason for the rejection!;RUS=Для подтверждения необходимо ввести причину отклонения!';
+
+    [External]
+    PROCEDURE SetVariablesPage@1(InitStatus@1000 : Text);
+    BEGIN
+
+        Status := InitStatus;
+    END;
+
+    [External]
+    PROCEDURE GetVariablePage@2() RejectionReasonStr : Text[250];
+    BEGIN
+
+        RejectionReasonStr := RejectionReason;
+    END;
+
+    BEGIN
+    END.
+  }
+}
+

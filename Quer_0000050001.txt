@@ -1,0 +1,47 @@
+OBJECT Query 50001 Requests for the current month
+{
+  OBJECT-PROPERTIES
+  {
+    Date=13.06.22;
+    Time=[ 7:18:34];
+    Modified=Yes;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    CaptionML=[ENU=Requests for the current month;
+               RUS=Количество заявок за текущий месяц];
+    OnBeforeOpen=BEGIN
+
+                     //WORKDATE
+                     CurrQuery.SETFILTER(Start_Date, '01..31');
+                 END;
+
+  }
+  ELEMENTS
+  {
+    { 1   ;    ;DataItem;                    ;
+               DataItemTable=Table50002 }
+
+    { 2   ;1   ;Column  ;                    ;
+               DataSource=Start Date }
+
+    { 3   ;1   ;Column  ;                    ;
+               DataSource=Status }
+
+    { 4   ;1   ;Column  ;                    ;
+               CaptionML=[ENU=Number of request;
+                          RUS=Количество заявок];
+               DataSource=Entry No CODE;
+               MethodType=Totals;
+               Method=Sum }
+
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+

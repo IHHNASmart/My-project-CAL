@@ -1,0 +1,58 @@
+OBJECT Table 50001 Out of Office Reason
+{
+  OBJECT-PROPERTIES
+  {
+    Date=12.06.22;
+    Time=22:06:39;
+    Modified=Yes;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    DataCaptionFields=Description,Code;
+    DataClassification=CustomerContent;
+    CaptionML=[ENU="Out of Office Reason ";
+               RUS=Причина отсутствия;
+               UKR=Причина в▄дсутност▄];
+    LookupPageID=Page50002;
+  }
+  FIELDS
+  {
+    { 1   ;   ;Code                ;Code20        ;FieldClass=Normal;
+                                                   OnValidate=BEGIN
+                                                                  TESTFIELD(Code);
+                                                              END;
+
+                                                   DataClassification=CustomerContent;
+                                                   CaptionML=[ENU=Code;
+                                                              RUS=Код;
+                                                              UKR=Код] }
+    { 2   ;   ;Description         ;Text100       ;OnValidate=BEGIN
+                                                                  TESTFIELD(Description);
+                                                              END;
+
+                                                   DataClassification=CustomerContent;
+                                                   CaptionML=[ENU=Description;
+                                                              RUS=Описание;
+                                                              UKR=Опис] }
+    { 1001;   ;All Reasons         ;Integer       ;FieldClass=FlowField;
+                                                   CalcFormula=Count("Out of Office Reason");
+                                                   CaptionML=[ENU=All Reasons;
+                                                              RUS=Все причины отсутствия] }
+  }
+  KEYS
+  {
+    {    ;Code                                    ;Clustered=Yes }
+  }
+  FIELDGROUPS
+  {
+    { 1   ;DropDown            ;Code,Description                         }
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+

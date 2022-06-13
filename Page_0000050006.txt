@@ -1,0 +1,37 @@
+OBJECT Page 50006 Out of Office Reasons CardPart
+{
+  OBJECT-PROPERTIES
+  {
+    Date=12.06.22;
+    Time=18:29:28;
+    Modified=Yes;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    SourceTable=Table50001;
+    PageType=CardPart;
+  }
+  CONTROLS
+  {
+    { 1   ;0   ;Container ;
+                ContainerType=ContentArea }
+
+    { 3   ;1   ;Group     ;
+                GroupType=CueGroup }
+
+    { 2   ;2   ;Field     ;
+                ApplicationArea=#Basic,#Suite;
+                SourceExpr="All Reasons";
+                Editable=False;
+                DrillDownPageID=Out of Office Reasons List }
+
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+

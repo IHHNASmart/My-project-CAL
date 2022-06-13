@@ -1,0 +1,158 @@
+OBJECT Page 50004 Out of Office Request Doc
+{
+  OBJECT-PROPERTIES
+  {
+    Date=10.06.22;
+    Time=12:00:16;
+    Modified=Yes;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    SourceTable=Table50002;
+    DataCaptionFields=Entry No,Employee No.,Status,ReasonName;
+    PageType=Document;
+    OnInit=BEGIN
+
+               //MESSAGE('OnInit DOC');
+               //open1
+           END;
+
+    OnOpenPage=BEGIN
+                   //MESSAGE('OnOpenPage DOC');
+                   //open2
+               END;
+
+    OnClosePage=BEGIN
+                    //MESSAGE('OnClosePage DOC');
+                    //close2
+                    // OK record 4
+                END;
+
+    OnNextRecord=BEGIN
+                     //MESSAGE('OnNextRecord DOC');
+                 END;
+
+    OnAfterGetRecord=BEGIN
+                         //MESSAGE('OnAfterGetRecord DOC');
+                         //open view 4 //3 OnFindRecord
+                     END;
+
+    OnNewRecord=BEGIN
+
+                    //MESSAGE('OnNewRecord DOC');
+
+                    //IF "Employee No." = '' THEN
+                    SetDefaultEmployee;
+                    "Start Date"    := WORKDATE;
+                    "End Date"      := WORKDATE;
+
+
+                    //"Start Date" :=
+                    //open3
+                END;
+
+    OnInsertRecord=BEGIN
+                       //MESSAGE('OnInsertRecord DOC');
+                   END;
+
+    OnModifyRecord=BEGIN
+                       //MESSAGE('OnModifyRecord DOC');
+                       // OK record 1
+
+                       //VALIDATE("Start Date");
+                       //VALIDATE("Start Time");
+                   END;
+
+    OnDeleteRecord=BEGIN
+                       //MESSAGE('OnDeleteRecord DOC');
+                   END;
+
+    OnQueryClosePage=BEGIN
+                         //MESSAGE('OnQueryClosePage DOC');
+                         //close1
+                         // OK record 3
+                     END;
+
+    OnAfterGetCurrRecord=BEGIN
+                             //MESSAGE('OnAfterGetCurrRecord DOC');
+                             //open4 //open view 5
+                         END;
+
+  }
+  CONTROLS
+  {
+    { 1   ;    ;Container ;
+                ContainerType=ContentArea }
+
+    { 2   ;1   ;Group     ;
+                Name=General;
+                CaptionML=[ENU=General;
+                           RUS=Общее];
+                GroupType=Group }
+
+    { 3   ;2   ;Field     ;
+                SourceExpr="Entry No" }
+
+    { 4   ;2   ;Field     ;
+                SourceExpr="Employee No." }
+
+    { 5   ;2   ;Field     ;
+                SourceExpr="Start Date";
+                OnValidate=BEGIN
+
+                               //VALIDATE("Start Date");
+
+                           END;
+
+                ShowMandatory=True }
+
+    { 6   ;2   ;Field     ;
+                SourceExpr="Start Time";
+                ShowMandatory=True }
+
+    { 11  ;2   ;Field     ;
+                SourceExpr=Description;
+                ShowMandatory=True }
+
+    { 10  ;2   ;Field     ;
+                SourceExpr=Status;
+                Editable=False }
+
+    { 9   ;2   ;Field     ;
+                SourceExpr="Reason Code";
+                ShowMandatory=True }
+
+    { 7   ;2   ;Field     ;
+                SourceExpr="End Date";
+                ShowMandatory=True }
+
+    { 8   ;2   ;Field     ;
+                SourceExpr="End Time";
+                ShowMandatory=True }
+
+    { 12  ;2   ;Field     ;
+                SourceExpr="Rejection reason" }
+
+  }
+  CODE
+  {
+    VAR
+      UserSetup@1000 : Record 91;
+      textError01@1001 : TextConst 'ENU=The start date must not be less than the working date!;RUS="Дата старта не должна быть меньше рабочей даты! "';
+
+    LOCAL PROCEDURE SetDefaultEmployee@1();
+    BEGIN
+
+        IF NOT UserSetup.GET(USERID) THEN
+          EXIT;
+
+        IF UserSetup.Employee <> '' THEN
+          "Employee No." := UserSetup.Employee;
+    END;
+
+    BEGIN
+    END.
+  }
+}
+

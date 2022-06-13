@@ -1,0 +1,42 @@
+OBJECT Page 50002 Out of Office Reasons List
+{
+  OBJECT-PROPERTIES
+  {
+    Date=09.06.22;
+    Time=13:55:18;
+    Modified=Yes;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    CaptionML=[ENU=Out of Office Reasons;
+               RUS=Причина отсутствия];
+    DeleteAllowed=Yes;
+    SourceTable=Table50001;
+    DelayedInsert=Yes;
+    PageType=List;
+  }
+  CONTROLS
+  {
+    { 1   ;0   ;Container ;
+                ContainerType=ContentArea }
+
+    { 2   ;1   ;Group     ;
+                Name=Group;
+                GroupType=Repeater }
+
+    { 3   ;2   ;Field     ;
+                SourceExpr=Code }
+
+    { 4   ;2   ;Field     ;
+                SourceExpr=Description }
+
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+
