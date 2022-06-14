@@ -2,8 +2,8 @@ OBJECT Table 50001 Out of Office Reason
 {
   OBJECT-PROPERTIES
   {
-    Date=12.06.22;
-    Time=22:06:39;
+    Date=13.06.22;
+    Time=13:27:13;
     Modified=Yes;
     Version List=;
   }
@@ -35,10 +35,6 @@ OBJECT Table 50001 Out of Office Reason
                                                    CaptionML=[ENU=Description;
                                                               RUS=Описание;
                                                               UKR=Опис] }
-    { 1001;   ;All Reasons         ;Integer       ;FieldClass=FlowField;
-                                                   CalcFormula=Count("Out of Office Reason");
-                                                   CaptionML=[ENU=All Reasons;
-                                                              RUS=Все причины отсутствия] }
   }
   KEYS
   {
@@ -46,7 +42,7 @@ OBJECT Table 50001 Out of Office Reason
   }
   FIELDGROUPS
   {
-    { 1   ;DropDown            ;Code,Description                         }
+    { 1   ;DropDown            ;Description,Code                         }
   }
   CODE
   {

@@ -2,8 +2,8 @@ OBJECT Page 50002 Out of Office Reasons List
 {
   OBJECT-PROPERTIES
   {
-    Date=09.06.22;
-    Time=13:55:18;
+    Date=13.06.22;
+    Time=13:28:57;
     Modified=Yes;
     Version List=;
   }
@@ -11,7 +11,6 @@ OBJECT Page 50002 Out of Office Reasons List
   {
     CaptionML=[ENU=Out of Office Reasons;
                RUS=Причина отсутствия];
-    DeleteAllowed=Yes;
     SourceTable=Table50001;
     DelayedInsert=Yes;
     PageType=List;

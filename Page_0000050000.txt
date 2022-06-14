@@ -2,8 +2,8 @@ OBJECT Page 50000 AdminOutOfOffice RoleCentre
 {
   OBJECT-PROPERTIES
   {
-    Date=12.06.22;
-    Time=20:26:21;
+    Date=13.06.22;
+    Time=14:59:05;
     Modified=Yes;
     Version List=;
   }
@@ -12,6 +12,21 @@ OBJECT Page 50000 AdminOutOfOffice RoleCentre
     CaptionML=[ENU=Administrator Out of Office Day;
                RUS=Администратор день вне офиса];
     PageType=RoleCenter;
+    ActionList=ACTIONS
+    {
+      { 7       ;    ;ActionContainer;
+                      ActionContainerType=HomeItems }
+      { 8       ;1   ;Action    ;
+                      Name=Out of Office Reasons;
+                      CaptionML=[ENU=Out of Office Reasons;
+                                 RUS=Причины отсутствия];
+                      RunObject=Page 50002 }
+      { 9       ;1   ;Action    ;
+                      Name=Out of Office Request;
+                      CaptionML=[ENU=Out of Office Request;
+                                 RUS=Заявка на отсутствие];
+                      RunObject=Page 50003 }
+    }
   }
   CONTROLS
   {
@@ -19,22 +34,30 @@ OBJECT Page 50000 AdminOutOfOffice RoleCentre
                 Name=General;
                 ContainerType=RoleCenterArea }
 
-    { 4   ;1   ;Group     ;
+    { 2   ;1   ;Group     ;
                 GroupType=Group }
 
-    { 2   ;2   ;Part      ;
-                Name=[Out of Office Request ];
-                CaptionML=[ENU="Out of Office Request ";
+    { 5   ;2   ;Part      ;
+                Name=Out of Office Request;
+                CaptionML=[ENU=Out of Office Request;
                            RUS=Заявка на отсутствие];
-                PagePartID=Page50007;
-                PartType=Page }
-
-    { 3   ;2   ;Part      ;
-                Name=Out of Office Reasons;
-                CaptionML=[ENU=Out of Office Reasons;
-                           RUS=Причины отсутствия];
                 PagePartID=Page50006;
                 PartType=Page }
+
+    { 6   ;1   ;Group     ;
+                GroupType=Group }
+
+    { 3   ;2   ;Part      ;
+                CaptionML=[ENU=Count Out of Office Request;
+                           RUS=Количество заявок на отсутствие];
+                PartType=Chart;
+                ChartPartID=A50002 }
+
+    { 4   ;2   ;Part      ;
+                CaptionML=[ENU=Requests for the current month;
+                           RUS=Заявки текущего месяца];
+                PartType=Chart;
+                ChartPartID=A50003 }
 
   }
   CODE

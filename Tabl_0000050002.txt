@@ -2,19 +2,14 @@ OBJECT Table 50002 Out of Office Request
 {
   OBJECT-PROPERTIES
   {
-    Date=12.06.22;
-    Time=21:08:04;
+    Date=13.06.22;
+    Time=16:00:18;
     Modified=Yes;
     Version List=;
   }
   PROPERTIES
   {
     DataCaptionFields=Entry No,Employee No.,Status;
-    OnInsert=BEGIN
-
-                 "Entry No CODE" := 1;
-             END;
-
     OnModify=BEGIN
 
                  TESTFIELD("Employee No.");
@@ -24,13 +19,6 @@ OBJECT Table 50002 Out of Office Request
                  TESTFIELD("End Date");
                  TESTFIELD("End Time");
                  TESTFIELD(Description);
-
-                 "Entry No CODE" := 1;
-             END;
-
-    OnRename=BEGIN
-
-                 "Entry No CODE" := 1;
              END;
 
     DataClassification=CustomerContent;
@@ -45,8 +33,7 @@ OBJECT Table 50002 Out of Office Request
     { 1   ;   ;Entry No            ;Integer       ;AutoIncrement=Yes;
                                                    DataClassification=CustomerContent;
                                                    CaptionML=[ENU=Entry No;
-                                                              RUS=Номер];
-                                                   NotBlank=No }
+                                                              RUS=Номер] }
     { 2   ;   ;Employee No.        ;Code20        ;TableRelation=Employee;
                                                    DataClassification=CustomerContent;
                                                    CaptionML=[ENU=Employee No.;
@@ -99,8 +86,7 @@ OBJECT Table 50002 Out of Office Request
     { 7   ;   ;Reason Code         ;Code20        ;TableRelation="Out of Office Reason";
                                                    DataClassification=CustomerContent;
                                                    CaptionML=[ENU=Reason Code;
-                                                              RUS=Код причины];
-                                                   NotBlank=Yes }
+                                                              RUS=Код причины] }
     { 8   ;   ;Status              ;Option        ;InitValue=New;
                                                    DataClassification=CustomerContent;
                                                    CaptionML=[ENU=Status;
@@ -116,21 +102,12 @@ OBJECT Table 50002 Out of Office Request
     { 10  ;   ;Rejection reason    ;Text250       ;DataClassification=CustomerContent;
                                                    CaptionML=[ENU=Rejection reason;
                                                               RUS=Описание причины отказа] }
-    { 11  ;   ;Entry No CODE       ;Integer       ;DataClassification=ToBeClassified }
-    { 1002;   ;EmployeeInitials    ;Text50        ;FieldClass=FlowField;
+    { 11  ;   ;EmployeeInitials    ;Text50        ;FieldClass=FlowField;
                                                    CalcFormula=Lookup(Employee.Initials WHERE (No.=FIELD(Employee No.)));
                                                    CaptionML=[ENU=Employee Initials;
                                                               RUS=Initials сотрудника] }
-    { 1007;   ;ReasonName          ;Text50        ;FieldClass=FlowField;
-                                                   CalcFormula=Lookup("Out of Office Reason".Description WHERE (Code=FIELD(Reason Code)));
-                                                   CaptionML=[ENU=Reason Name;
+    { 12  ;   ;ReasonName          ;Text50        ;CaptionML=[ENU=Reason Name;
                                                               RUS=Название причины] }
-    { 1010;   ;AllRequests         ;Integer       ;FieldClass=FlowField;
-                                                   CalcFormula=Count("Out of Office Request") }
-    { 1011;   ;AllRequests New     ;Integer       ;FieldClass=FlowField;
-                                                   CalcFormula=Count("Out of Office Request" WHERE (Status=FILTER(New))) }
-    { 1012;   ;AllRequests In process;Integer     ;FieldClass=FlowField;
-                                                   CalcFormula=Count("Out of Office Request" WHERE (Status=FILTER(In process))) }
   }
   KEYS
   {
@@ -143,7 +120,7 @@ OBJECT Table 50002 Out of Office Request
   {
     { 1   ;Brick               ;Employee No.,Entry No,Reason Code        }
     { 2   ;DropDown            ;Employee No.,Entry No,Reason Code        }
-    { 3   ;test                ;Entry No,Employee No.,Status,ReasonName  }
+    { 3   ;test                ;Entry No,Employee No.,Status,Field1007   }
   }
   CODE
   {

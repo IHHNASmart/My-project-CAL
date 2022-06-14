@@ -2,8 +2,8 @@ OBJECT Page 50003 Out of Office Requests List
 {
   OBJECT-PROPERTIES
   {
-    Date=10.06.22;
-    Time=16:38:25;
+    Date=14.06.22;
+    Time=18:17:23;
     Modified=Yes;
     Version List=;
   }
@@ -15,6 +15,19 @@ OBJECT Page 50003 Out of Office Requests List
     SourceTable=Table50002;
     PageType=List;
     CardPageID=Out of Office Request Doc;
+    OnInit=BEGIN
+
+               UserSetupTrue := UserSetup.GET(USERID);
+               UserSetupHR   := UserSetup."HR administrator";
+           END;
+
+    OnOpenPage=BEGIN
+
+                   IF NOT UserSetupHR THEN
+                     SETFILTER("Employee No.", UserSetup.Employee);
+
+               END;
+
     ActionList=ACTIONS
     {
       { 14      ;    ;ActionContainer;
@@ -31,6 +44,12 @@ OBJECT Page 50003 Out of Office Requests List
                       OnAction=BEGIN
 
                                    //'In process';
+                                   IF xRec.Status = xRec.Status::"In process" THEN
+                                     EXIT;
+
+                                   IF NOT CheckUserAccess(xRec.Status::"In process") THEN
+                                     EXIT;
+
                                    IF CONFIRM(textSet, FALSE, FORMAT(xRec.Status::"In process")) THEN
                                      SetNewStatus(xRec.Status::"In process",'');
 
@@ -46,9 +65,14 @@ OBJECT Page 50003 Out of Office Requests List
                       OnAction=BEGIN
 
                                    //'Approved';
+                                   IF xRec.Status = xRec.Status::Approved THEN
+                                     EXIT;
+
+                                   IF NOT CheckUserAccess(xRec.Status::Approved) THEN
+                                     EXIT;
+
                                    IF CONFIRM(textSet, FALSE, FORMAT(xRec.Status::Approved)) THEN
                                      SetNewStatus(xRec.Status::Approved,'');
-
                                END;
                                 }
       { 17      ;1   ;Action    ;
@@ -60,12 +84,27 @@ OBJECT Page 50003 Out of Office Requests List
                       PromotedOnly=Yes;
                       OnAction=BEGIN
 
-                                   CLEAR(dialConfirmationRejected);
                                    //'Declined';
-                                   dialConfirmationRejected.SetVariablesPage(FORMAT(xRec.Status::Declined));
+                                   IF xRec.Status = xRec.Status::Declined THEN
+                                     EXIT;
 
-                                   IF dialConfirmationRejected.RUNMODAL = ACTION::OK THEN
-                                     SetNewStatus(xRec.Status::Declined, dialConfirmationRejected.GetVariablePage);
+                                   IF NOT CheckUserAccess(xRec.Status::Declined) THEN
+                                     EXIT;
+
+                                   IF UserSetupHR THEN BEGIN
+                                     CLEAR(dialConfirmationRejected);
+                                     dialConfirmationRejected.SetVariablesPage(FORMAT(xRec.Status::Declined));
+
+                                     IF dialConfirmationRejected.RUNMODAL = ACTION::OK THEN BEGIN
+                                       SetNewStatus(xRec.Status::Declined, dialConfirmationRejected.GetVariablePage);
+                                       //CurrPage.UPDATE;
+                                       END;
+                                     END
+                                   ELSE BEGIN
+                                     IF CONFIRM(textSet, FALSE, FORMAT(xRec.Status::Declined)) THEN BEGIN
+                                       SetNewStatus(xRec.Status::Declined, STRSUBSTNO(textDeclinedUser, UserSetup.Employee));
+                                     END;
+                                    END;
                                END;
                                 }
       { 18      ;    ;ActionContainer;
@@ -74,7 +113,28 @@ OBJECT Page 50003 Out of Office Requests List
                       Name=Print Out of Office Day Count;
                       CaptionML=[ENU=Print Out of Office Day Count;
                                  RUS=Печать кол-во дней отсутствия];
-                      RunObject=Report 50000 }
+                      OnAction=VAR
+                                 recordOutOfOffice@1000 : Record 50002;
+                                 Filter@1001 : Text;
+                               BEGIN
+
+                                   CLEAR(recordOutOfOffice);
+                                   CurrPage.SETSELECTIONFILTER(recordOutOfOffice);
+
+                                   IF recordOutOfOffice.FINDSET THEN BEGIN
+                                     REPEAT
+                                       Filter := Filter + FORMAT(recordOutOfOffice."Entry No") + '|';
+                                     UNTIL recordOutOfOffice.NEXT = 0;
+                                     Filter := DELSTR(Filter, STRLEN(Filter));
+                                     //MESSAGE('%1', Filter);
+                                     recordOutOfOffice.RESET;
+                                     recordOutOfOffice.SETFILTER("Entry No", Filter);
+                                     REPORT.RUNMODAL(REPORT::"Out of Office Day Count", TRUE, TRUE, recordOutOfOffice);
+                                     END
+                                   ELSE
+                                     REPORT.RUNMODAL(REPORT::"Out of Office Day Count", TRUE, TRUE, xRec);
+                               END;
+                                }
     }
   }
   CONTROLS
@@ -92,6 +152,9 @@ OBJECT Page 50003 Out of Office Requests List
     { 4   ;2   ;Field     ;
                 SourceExpr="Employee No." }
 
+    { 13  ;2   ;Field     ;
+                SourceExpr=EmployeeInitials }
+
     { 5   ;2   ;Field     ;
                 SourceExpr="Start Date" }
 
@@ -107,7 +170,7 @@ OBJECT Page 50003 Out of Office Requests List
     { 9   ;2   ;Field     ;
                 SourceExpr="Reason Code" }
 
-    { 13  ;2   ;Field     ;
+    { 20  ;2   ;Field     ;
                 SourceExpr=ReasonName }
 
     { 10  ;2   ;Field     ;
@@ -125,6 +188,12 @@ OBJECT Page 50003 Out of Office Requests List
     VAR
       textSet@1000 : TextConst 'ENU=Change status to "%1"?;RUS=Изменить статус на "%1"?';
       dialConfirmationRejected@1001 : Page 50005;
+      UserSetup@1004 : Record 91;
+      UserSetupTrue@1003 : Boolean;
+      UserSetupHR@1002 : Boolean;
+      textApproved@1006 : TextConst 'ENU=It is forbidden to change an application in the Approved status!;RUS=Изменять заявку в статусе Approved запрещено!';
+      textDeclinedUser@1005 : TextConst 'ENU=Application canceled by user %1;RUS=Заявка отменена пользователем %1';
+      reportOutOfOffice@1007 : Report 50000;
 
     LOCAL PROCEDURE SetNewStatus@1(NewStatus@1000 : Option;TextStatus@1003 : Text[250]);
     VAR
@@ -146,6 +215,41 @@ OBJECT Page 50003 Out of Office Requests List
 
           MESSAGE(text001, OutOfOfficeRequest.Status);
 
+    END;
+
+    LOCAL PROCEDURE SetDefaultEmployee@2();
+    BEGIN
+
+        IF NOT UserSetupTrue THEN
+          EXIT;
+
+        IF UserSetup.Employee <> '' THEN
+          "Employee No." := UserSetup.Employee;
+    END;
+
+    LOCAL PROCEDURE CheckUserAccess@8(NewStatus@1000 : Option) AccessGranted : Boolean;
+    BEGIN
+
+          IF xRec.Status = xRec.Status::Approved THEN BEGIN
+            MESSAGE(textApproved);
+            AccessGranted := FALSE;
+            EXIT;
+          END;
+
+          CASE NewStatus OF
+            xRec.Status::"In process",
+            xRec.Status::Declined:
+              AccessGranted := TRUE;
+            xRec.Status::Approved: BEGIN
+              IF UserSetupHR THEN
+                AccessGranted := TRUE
+              ELSE
+                BEGIN
+                  AccessGranted := FALSE;
+                  MESSAGE(textApproved);
+                END;
+             END;
+           END;
     END;
 
     BEGIN

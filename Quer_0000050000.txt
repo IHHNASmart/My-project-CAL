@@ -3,7 +3,7 @@ OBJECT Query 50000 Count Out of Office Request
   OBJECT-PROPERTIES
   {
     Date=13.06.22;
-    Time=[ 7:17:31];
+    Time=12:58:34;
     Modified=Yes;
     Version List=;
   }
@@ -25,9 +25,8 @@ OBJECT Query 50000 Count Out of Office Request
     { 3   ;1   ;Column  ;                    ;
                CaptionML=[ENU=Number of request;
                           RUS=Количество заявок];
-               DataSource=Entry No CODE;
                MethodType=Totals;
-               Method=Sum }
+               Method=Count }
 
   }
   CODE

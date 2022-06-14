@@ -1,0 +1,38 @@
+OBJECT Codeunit 50000 Reason code correction
+{
+  OBJECT-PROPERTIES
+  {
+    Date=13.06.22;
+    Time=16:20:32;
+    Modified=Yes;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    OnRun=BEGIN
+
+              CLEAR(docOutOffOffice);
+
+              IF docOutOffOffice.FINDSET THEN
+                REPEAT
+                  CLEAR(spOutOffOffice);
+                  spOutOffOffice.GET(docOutOffOffice."Reason Code");
+                  docOutOffOffice.ReasonName := spOutOffOffice.Description;
+                  docOutOffOffice.MODIFY;
+                UNTIL docOutOffOffice.NEXT = 0;
+
+                MESSAGE('Ok');
+          END;
+
+  }
+  CODE
+  {
+    VAR
+      docOutOffOffice@1000 : Record 50002;
+      spOutOffOffice@1001 : Record 50001;
+
+    BEGIN
+    END.
+  }
+}
+

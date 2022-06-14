@@ -1,16 +1,36 @@
-OBJECT Page 50006 Out of Office Reasons CardPart
+OBJECT Page 50006 Out of Office Setup CardPart
 {
   OBJECT-PROPERTIES
   {
-    Date=12.06.22;
-    Time=18:29:28;
+    Date=13.06.22;
+    Time=14:54:34;
     Modified=Yes;
     Version List=;
   }
   PROPERTIES
   {
-    SourceTable=Table50001;
+    CaptionML=[ENU=Out of Office Setup;
+               RUS=Настройки выходного дня];
+    SourceTable=Table50003;
     PageType=CardPart;
+    ActionList=ACTIONS
+    {
+      { 6       ;    ;ActionContainer;
+                      Name=General;
+                      ActionContainerType=ActionItems }
+      { 9       ;1   ;ActionGroup;
+                      Name=General Action }
+      { 7       ;2   ;Action    ;
+                      Name=Out of Office Requests;
+                      CaptionML=[ENU=Out of Office Requests;
+                                 RUS=Заявка на отсутствие];
+                      RunObject=Page 50003 }
+      { 8       ;2   ;Action    ;
+                      Name=[Out of Office Reasons ];
+                      CaptionML=[ENU=Out of Office Reasons;
+                                 RUS=Причины отсутствия];
+                      RunObject=Page 50002 }
+    }
   }
   CONTROLS
   {
@@ -20,11 +40,20 @@ OBJECT Page 50006 Out of Office Reasons CardPart
     { 3   ;1   ;Group     ;
                 GroupType=CueGroup }
 
+    { 5   ;2   ;Field     ;
+                ApplicationArea=#Basic,#Suite;
+                SourceExpr=AllRequests;
+                DrillDownPageID=Out of Office Requests List }
+
     { 2   ;2   ;Field     ;
                 ApplicationArea=#Basic,#Suite;
-                SourceExpr="All Reasons";
-                Editable=False;
-                DrillDownPageID=Out of Office Reasons List }
+                SourceExpr="AllRequests New";
+                DrillDownPageID=Out of Office Requests List }
+
+    { 4   ;2   ;Field     ;
+                ApplicationArea=#Basic,#Suite;
+                SourceExpr="AllRequests In process";
+                DrillDownPageID=Out of Office Requests List }
 
   }
   CODE

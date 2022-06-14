@@ -1,0 +1,45 @@
+OBJECT Table 50003 Out of Office Setup
+{
+  OBJECT-PROPERTIES
+  {
+    Date=13.06.22;
+    Time=14:24:33;
+    Modified=Yes;
+    Version List=;
+  }
+  PROPERTIES
+  {
+    CaptionML=[ENU=Out of Office Setup;
+               RUS=Настройки выходного дня];
+  }
+  FIELDS
+  {
+    { 1   ;   ;UserIDS             ;GUID          ;DataClassification=ToBeClassified }
+    { 2   ;   ;AllRequests New     ;Integer       ;FieldClass=FlowField;
+                                                   CalcFormula=Count("Out of Office Request" WHERE (Status=FILTER(New)));
+                                                   CaptionML=[ENU=All Requests - New;
+                                                              RUS=Все заявки - Новая] }
+    { 3   ;   ;AllRequests In process;Integer     ;FieldClass=FlowField;
+                                                   CalcFormula=Count("Out of Office Request" WHERE (Status=FILTER(In process)));
+                                                   CaptionML=[ENU=All Requests - In process;
+                                                              RUS=Все заявки - На рассмотрении] }
+    { 5   ;   ;AllRequests         ;Integer       ;FieldClass=FlowField;
+                                                   CalcFormula=Count("Out of Office Request");
+                                                   CaptionML=[ENU=All Requests;
+                                                              RUS=Все заявки] }
+  }
+  KEYS
+  {
+    {    ;UserIDS                                 ;Clustered=Yes }
+  }
+  FIELDGROUPS
+  {
+  }
+  CODE
+  {
+
+    BEGIN
+    END.
+  }
+}
+

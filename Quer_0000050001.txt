@@ -3,7 +3,7 @@ OBJECT Query 50001 Requests for the current month
   OBJECT-PROPERTIES
   {
     Date=13.06.22;
-    Time=[ 7:18:34];
+    Time=13:00:11;
     Modified=Yes;
     Version List=;
   }
@@ -32,9 +32,8 @@ OBJECT Query 50001 Requests for the current month
     { 4   ;1   ;Column  ;                    ;
                CaptionML=[ENU=Number of request;
                           RUS=Количество заявок];
-               DataSource=Entry No CODE;
                MethodType=Totals;
-               Method=Sum }
+               Method=Count }
 
   }
   CODE
