@@ -2,8 +2,8 @@ OBJECT Table 50002 Out of Office Request
 {
   OBJECT-PROPERTIES
   {
-    Date=13.06.22;
-    Time=16:00:18;
+    Date=16.06.22;
+    Time=20:26:48;
     Modified=Yes;
     Version List=;
   }
@@ -108,6 +108,10 @@ OBJECT Table 50002 Out of Office Request
                                                               RUS=Initials сотрудника] }
     { 12  ;   ;ReasonName          ;Text50        ;CaptionML=[ENU=Reason Name;
                                                               RUS=Название причины] }
+    { 13  ;   ;File Request        ;BLOB          ;DataClassification=CustomerContent;
+                                                   CaptionML=[ENU=File Request;
+                                                              RUS=Файл заявки] }
+    { 14  ;   ;File Name           ;Text250       ;DataClassification=ToBeClassified }
   }
   KEYS
   {

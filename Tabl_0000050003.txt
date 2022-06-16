@@ -2,8 +2,8 @@ OBJECT Table 50003 Out of Office Setup
 {
   OBJECT-PROPERTIES
   {
-    Date=13.06.22;
-    Time=14:24:33;
+    Date=16.06.22;
+    Time=11:17:40;
     Modified=Yes;
     Version List=;
   }
@@ -16,17 +16,30 @@ OBJECT Table 50003 Out of Office Setup
   {
     { 1   ;   ;UserIDS             ;GUID          ;DataClassification=ToBeClassified }
     { 2   ;   ;AllRequests New     ;Integer       ;FieldClass=FlowField;
-                                                   CalcFormula=Count("Out of Office Request" WHERE (Status=FILTER(New)));
+                                                   CalcFormula=Count("Out of Office Request" WHERE (Status=FILTER(New),
+                                                                                                    Reason Code=FIELD(Reason Filter),
+                                                                                                    Employee No.=FIELD(Employee Filter)));
                                                    CaptionML=[ENU=All Requests - New;
                                                               RUS=Все заявки - Новая] }
     { 3   ;   ;AllRequests In process;Integer     ;FieldClass=FlowField;
-                                                   CalcFormula=Count("Out of Office Request" WHERE (Status=FILTER(In process)));
+                                                   CalcFormula=Count("Out of Office Request" WHERE (Status=FILTER(In process),
+                                                                                                    Employee No.=FIELD(Employee Filter),
+                                                                                                    Reason Code=FIELD(Reason Filter)));
                                                    CaptionML=[ENU=All Requests - In process;
                                                               RUS=Все заявки - На рассмотрении] }
-    { 5   ;   ;AllRequests         ;Integer       ;FieldClass=FlowField;
-                                                   CalcFormula=Count("Out of Office Request");
+    { 4   ;   ;AllRequests         ;Integer       ;FieldClass=FlowField;
+                                                   CalcFormula=Count("Out of Office Request" WHERE (Employee No.=FIELD(Employee Filter),
+                                                                                                    Reason Code=FIELD(Reason Filter)));
                                                    CaptionML=[ENU=All Requests;
                                                               RUS=Все заявки] }
+    { 5   ;   ;Reason Filter       ;Code20        ;FieldClass=FlowFilter;
+                                                   TableRelation="Out of Office Reason";
+                                                   CaptionML=[ENU=Reason Filter;
+                                                              RUS=Фильтр причина] }
+    { 6   ;   ;Employee Filter     ;Code20        ;FieldClass=FlowFilter;
+                                                   TableRelation=Employee;
+                                                   CaptionML=[ENU=Employee Filter;
+                                                              RUS=Фильтр сотрудник] }
   }
   KEYS
   {

@@ -2,8 +2,8 @@ OBJECT Page 50006 Out of Office Setup CardPart
 {
   OBJECT-PROPERTIES
   {
-    Date=13.06.22;
-    Time=14:54:34;
+    Date=16.06.22;
+    Time=12:58:47;
     Modified=Yes;
     Version List=;
   }
@@ -13,6 +13,25 @@ OBJECT Page 50006 Out of Office Setup CardPart
                RUS=Настройки выходного дня];
     SourceTable=Table50003;
     PageType=CardPart;
+    OnInit=BEGIN
+
+               UserSetupTrue := UserSetup.GET(USERID);
+               UserSetupHR   := UserSetup."HR administrator";
+           END;
+
+    OnOpenPage=BEGIN
+
+                   IF NOT GET THEN BEGIN
+                     INIT;
+                     INSERT;
+                   END;
+
+                   IF NOT UserSetupHR THEN BEGIN
+                     FILTERGROUP := 2;
+                     SETRANGE("Employee Filter", UserSetup.Employee);
+                   END;
+               END;
+
     ActionList=ACTIONS
     {
       { 6       ;    ;ActionContainer;
@@ -41,23 +60,51 @@ OBJECT Page 50006 Out of Office Setup CardPart
                 GroupType=CueGroup }
 
     { 5   ;2   ;Field     ;
+                CaptionML=[ENU=All Requests;
+                           RUS=Все заявки];
                 ApplicationArea=#Basic,#Suite;
                 SourceExpr=AllRequests;
                 DrillDownPageID=Out of Office Requests List }
 
     { 2   ;2   ;Field     ;
+                CaptionML=[ENU=All Requests - New;
+                           RUS=Все заявки - Новая];
                 ApplicationArea=#Basic,#Suite;
                 SourceExpr="AllRequests New";
-                DrillDownPageID=Out of Office Requests List }
+                DrillDownPageID=Out of Office Requests List;
+                OnDrillDown=VAR
+                              recordOutOfOffice@1000 : Record 50002;
+                            BEGIN
+
+                                recordOutOfOffice.FILTERGROUP := 2;
+                                recordOutOfOffice.SETRANGE(Status, recordOutOfOffice.Status::New);
+                                PAGE.RUN(PAGE::"Out of Office Requests List",recordOutOfOffice);
+                            END;
+                             }
 
     { 4   ;2   ;Field     ;
+                CaptionML=[ENU=All Requests - In process;
+                           RUS=Все заявки - На рассмотрении];
                 ApplicationArea=#Basic,#Suite;
                 SourceExpr="AllRequests In process";
-                DrillDownPageID=Out of Office Requests List }
+                DrillDownPageID=Out of Office Requests List;
+                OnDrillDown=VAR
+                              recordOutOfOffice@1000 : Record 50002;
+                            BEGIN
+
+                                recordOutOfOffice.FILTERGROUP := 2;
+                                recordOutOfOffice.SETRANGE(Status, recordOutOfOffice.Status::"In process");
+                                PAGE.RUN(PAGE::"Out of Office Requests List",recordOutOfOffice);
+                            END;
+                             }
 
   }
   CODE
   {
+    VAR
+      UserSetup@1000 : Record 91;
+      UserSetupTrue@1001 : Boolean;
+      UserSetupHR@1002 : Boolean;
 
     BEGIN
     END.

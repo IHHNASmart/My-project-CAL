@@ -2,8 +2,8 @@ OBJECT Page 50003 Out of Office Requests List
 {
   OBJECT-PROPERTIES
   {
-    Date=14.06.22;
-    Time=18:17:23;
+    Date=16.06.22;
+    Time=13:30:09;
     Modified=Yes;
     Version List=;
   }
@@ -23,9 +23,10 @@ OBJECT Page 50003 Out of Office Requests List
 
     OnOpenPage=BEGIN
 
-                   IF NOT UserSetupHR THEN
-                     SETFILTER("Employee No.", UserSetup.Employee);
-
+                   IF NOT UserSetupHR THEN BEGIN
+                     FILTERGROUP := 2;
+                     SETRANGE("Employee No.", UserSetup.Employee);
+                   END;
                END;
 
     ActionList=ACTIONS
@@ -120,19 +121,23 @@ OBJECT Page 50003 Out of Office Requests List
 
                                    CLEAR(recordOutOfOffice);
                                    CurrPage.SETSELECTIONFILTER(recordOutOfOffice);
+                                   IF NOT UserSetupHR THEN BEGIN
+                                     recordOutOfOffice.FILTERGROUP :=2;
+                                     recordOutOfOffice.SETRANGE("Employee No.", UserSetup.Employee);
+                                   END;
+                                   REPORT.RUNMODAL(REPORT::"Out of Office Day Count", TRUE, TRUE, recordOutOfOffice);
 
-                                   IF recordOutOfOffice.FINDSET THEN BEGIN
+                                   {IF recordOutOfOffice.FINDSET THEN BEGIN
                                      REPEAT
                                        Filter := Filter + FORMAT(recordOutOfOffice."Entry No") + '|';
                                      UNTIL recordOutOfOffice.NEXT = 0;
                                      Filter := DELSTR(Filter, STRLEN(Filter));
-                                     //MESSAGE('%1', Filter);
                                      recordOutOfOffice.RESET;
                                      recordOutOfOffice.SETFILTER("Entry No", Filter);
                                      REPORT.RUNMODAL(REPORT::"Out of Office Day Count", TRUE, TRUE, recordOutOfOffice);
                                      END
                                    ELSE
-                                     REPORT.RUNMODAL(REPORT::"Out of Office Day Count", TRUE, TRUE, xRec);
+                                     REPORT.RUNMODAL(REPORT::"Out of Office Day Count", TRUE, TRUE, xRec); }
                                END;
                                 }
     }

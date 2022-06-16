@@ -2,8 +2,8 @@ OBJECT Page 50004 Out of Office Request Doc
 {
   OBJECT-PROPERTIES
   {
-    Date=14.06.22;
-    Time=15:19:24;
+    Date=16.06.22;
+    Time=20:57:11;
     Modified=Yes;
     Version List=;
   }
@@ -181,6 +181,7 @@ OBJECT Page 50004 Out of Office Request Doc
                       Promoted=Yes;
                       Image=Attach;
                       PromotedCategory=Report;
+                      PromotedOnly=Yes;
                       OnAction=VAR
                                  RecRef@1000 : RecordRef;
                                  DocumentAttachmentDetails@1001 : Page 1173;
@@ -191,13 +192,73 @@ OBJECT Page 50004 Out of Office Request Doc
                                    DocumentAttachmentDetails.RUNMODAL;
                                END;
                                 }
+      { 25      ;2   ;Action    ;
+                      Name=Add file;
+                      OnAction=VAR
+                                 NVInStream@1000 : InStream;
+                                 NVOutStream@1002 : OutStream;
+                                 boolVar@1004 : Boolean;
+                               BEGIN
+
+                                   IF Status = Status::Approved THEN BEGIN
+                                       MESSAGE(textApproved);
+                                     EXIT;
+                                   END;
+
+                                   boolVar := UPLOADINTOSTREAM('Adding a file to a request','',' All Files (*.*)|*.*',"File Name",NVInStream);
+                                   Rec."File Request".CREATEOUTSTREAM(NVOutStream);
+
+                                   COPYSTREAM(NVOutStream,NVInStream);
+
+                                   IF Rec."File Request".HASVALUE THEN
+                                     Rec.MODIFY;
+                               END;
+                                }
+      { 16      ;2   ;Action    ;
+                      Name=[Save File ];
+                      OnAction=VAR
+                                 FileStreemIn@1000 : InStream;
+                                 FileCodeutin@1001 : Codeunit 419;
+                                 FileName@1002 : Text;
+                                 PathFile@1003 : Text;
+                                 ISdownload@1004 : Boolean;
+                                 text001@1005 : TextConst 'ENU=The file is not attached to the application;RUS=Файл к заявке не прикреплен';
+                                 text002@1006 : TextConst 'ENU=File saved!;RUS=Файл сохранен!';
+                               BEGIN
+
+                                   CALCFIELDS("File Request");
+                                   IF NOT Rec."File Request".HASVALUE THEN BEGIN
+                                       MESSAGE(text001);
+                                       EXIT
+                                     END;
+
+                                   FileName  := "File Name";
+                                   Rec."File Request".CREATEINSTREAM(FileStreemIn);
+                                   PathFile := PathHelper.GetDirectoryName(FileName);
+
+                                   ISdownload := DOWNLOADFROMSTREAM(FileStreemIn, 'Saving a file', PathFile,'',FileName);
+                                   IF ISdownload THEN
+                                     MESSAGE(text002);
+                               END;
+                                }
       { 22      ;    ;ActionContainer;
                       ActionContainerType=Reports }
       { 21      ;1   ;Action    ;
                       Name=Print Out of Office Day Count;
                       CaptionML=[ENU=Print Out of Office Day Count;
                                  RUS=Печать кол-во дней отсутствия];
-                      RunObject=Report 50000 }
+                      OnAction=BEGIN
+
+                                   Rec.FILTERGROUP := 0;
+                                   Rec.SETRANGE("Entry No", "Entry No");
+                                   IF NOT UserSetupHR THEN BEGIN
+                                     Rec.FILTERGROUP :=2;
+                                     Rec.SETRANGE("Employee No.", UserSetup.Employee);
+                                   END;
+
+                                   REPORT.RUNMODAL(REPORT::"Out of Office Day Count", TRUE, TRUE, Rec);
+                               END;
+                                }
     }
   }
   CONTROLS
@@ -304,6 +365,14 @@ OBJECT Page 50004 Out of Office Request Doc
                 SourceExpr="Rejection reason";
                 Editable=False }
 
+    { 15  ;1   ;Group     ;
+                Name=File;
+                GroupType=Group }
+
+    { 26  ;2   ;Field     ;
+                SourceExpr="File Name";
+                Editable=false }
+
   }
   CODE
   {
@@ -317,6 +386,7 @@ OBJECT Page 50004 Out of Office Request Doc
       textSet@1007 : TextConst 'ENU=Change status to "%1"?;RUS=Изменить статус на "%1"?';
       textApproved@1008 : TextConst 'ENU=It is forbidden to change an application in the Approved status!;RUS=Изменять заявку в статусе Approved запрещено!';
       textDeclinedUser@1009 : TextConst 'ENU=Application canceled by user %1;RUS=Заявка отменена пользователем %1';
+      PathHelper@1004 : DotNet "'mscorlib'.System.IO.Path";
 
     LOCAL PROCEDURE SetDefaultEmployee@1();
     BEGIN

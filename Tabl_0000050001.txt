@@ -2,8 +2,8 @@ OBJECT Table 50001 Out of Office Reason
 {
   OBJECT-PROPERTIES
   {
-    Date=13.06.22;
-    Time=13:27:13;
+    Date=15.06.22;
+    Time=11:03:52;
     Modified=Yes;
     Version List=;
   }
@@ -18,8 +18,7 @@ OBJECT Table 50001 Out of Office Reason
   }
   FIELDS
   {
-    { 1   ;   ;Code                ;Code20        ;FieldClass=Normal;
-                                                   OnValidate=BEGIN
+    { 1   ;   ;Code                ;Code20        ;OnValidate=BEGIN
                                                                   TESTFIELD(Code);
                                                               END;
 
